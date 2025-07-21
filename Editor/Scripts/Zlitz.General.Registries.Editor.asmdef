@@ -1,0 +1,18 @@
+{
+    "name": "Zlitz.General.Registries.Editor",
+    "rootNamespace": "Zlitz.General.Registries",
+    "references": [
+        "GUID:93783e9477fb904418d9c0244a158bd1"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
