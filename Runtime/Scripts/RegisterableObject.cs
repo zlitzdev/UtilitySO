@@ -20,7 +20,7 @@ namespace Zlitz.General.Registries
 {
     public abstract class RegisterableObject<T, TId, TData> : ScriptableObject
         where T : RegisterableObject<T, TId, TData>
-        where TData : class, new()
+        where TData : class
     {
         #region Registry
 
@@ -34,7 +34,7 @@ namespace Zlitz.General.Registries
             foreach (T entry in entries)
             {
                 TId id = entry.id;
-                KeyValuePair<T, TData> content = new KeyValuePair<T, TData>(entry, new TData());
+                KeyValuePair<T, TData> content = new KeyValuePair<T, TData>(entry, entry.CreateData());
             
                 if (!s_entries.TryAdd(id, content))
                 {
@@ -98,11 +98,17 @@ namespace Zlitz.General.Registries
         public TId id => m_id;
 
         public virtual bool includeInRegistry => true;
+
+        protected abstract TData CreateData();
     }
 
     public abstract class RegisterableObject<T, TId> : RegisterableObject<T, TId, VoidData>
         where T : RegisterableObject<T, TId>
     {
+        protected override VoidData CreateData()
+        {
+            return new VoidData();
+        }
     }
 
     public sealed class VoidData
@@ -144,7 +150,7 @@ namespace Zlitz.General.Registries
     {
         public static T[] GetEntries<T, TId, TData>()
             where T : RegisterableObject<T, TId, TData>
-            where TData : class, new()
+            where TData : class
         {
             HashSet<T> result = new HashSet<T>();
 
@@ -272,7 +278,7 @@ namespace Zlitz.General.Registries
     {
         public static T[] GetEntries<T, TId, TData>()
             where T : RegisterableObject<T, TId, TData>
-            where TData : class, new()
+            where TData : class
         {
             return Resources.LoadAll<T>("").Where(e => e.includeInRegistry).ToArray();
         }
