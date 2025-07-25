@@ -29,7 +29,7 @@ namespace Zlitz.General.UtilitySO
             foreach (T entry in entries)
             {
                 TId id = entry.id;
-                KeyValuePair<T, TData> content = new KeyValuePair<T, TData>(entry, entry.CreateData(entry));
+                KeyValuePair<T, TData> content = new KeyValuePair<T, TData>(entry, entry.CreateData());
             
                 if (!s_entries.TryAdd(id, content))
                 {
@@ -94,13 +94,13 @@ namespace Zlitz.General.UtilitySO
 
         public virtual bool includeInRegistry => true;
 
-        protected abstract TData CreateData(T entry);
+        protected abstract TData CreateData();
     }
 
     public abstract class RegisterableObject<T, TId> : RegisterableObject<T, TId, VoidData>
         where T : RegisterableObject<T, TId>
     {
-        protected override VoidData CreateData(T entry)
+        protected override VoidData CreateData()
         {
             return null;
         }
