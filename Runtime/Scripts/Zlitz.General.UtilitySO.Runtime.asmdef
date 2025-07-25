@@ -1,6 +1,6 @@
 {
-    "name": "Zlitz.General.Registries.Runtime",
-    "rootNamespace": "Zlitz.General.Registries",
+    "name": "Zlitz.General.UtilitySO.Runtime",
+    "rootNamespace": "Zlitz.General.UtilitySO",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

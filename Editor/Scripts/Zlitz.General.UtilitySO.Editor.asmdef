@@ -1,6 +1,6 @@
 {
-    "name": "Zlitz.General.Registries.Editor",
-    "rootNamespace": "Zlitz.General.Registries",
+    "name": "Zlitz.General.UtilitySO.Editor",
+    "rootNamespace": "Zlitz.General.UtilitySO",
     "references": [
         "GUID:93783e9477fb904418d9c0244a158bd1"
     ],

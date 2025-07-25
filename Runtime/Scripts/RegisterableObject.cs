@@ -1,5 +1,4 @@
 using System;
-using System.Text;
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
@@ -8,15 +7,11 @@ using UnityEngine;
 
 #if UNITY_EDITOR
 
-using System.IO;
-
 using UnityEditor;
-using UnityEditor.Build;
-using UnityEditor.Build.Reporting;
 
 #endif
 
-namespace Zlitz.General.Registries
+namespace Zlitz.General.UtilitySO
 {
     public abstract class RegisterableObject<T, TId, TData> : ScriptableObject
         where T : RegisterableObject<T, TId, TData>
@@ -168,107 +163,6 @@ namespace Zlitz.General.Registries
             }
 
             return result.ToArray();
-        }
-    }
-
-    internal class RegistryBuildProcess : IPreprocessBuildWithReport, IPostprocessBuildWithReport
-    {
-        private static readonly string s_resoucePath = "Assets/Resources/Temp_RegisterableObjects";
-
-        int IOrderedCallback.callbackOrder => -200;
-
-        void IPreprocessBuildWithReport.OnPreprocessBuild(BuildReport report)
-        {
-            if (!Directory.Exists(s_resoucePath))
-            {
-                Directory.CreateDirectory(s_resoucePath);
-            }
-
-            int copied = 0;
-            StringBuilder result = new StringBuilder()
-                .AppendLine("Copied registerable objects:");
-
-            string[] guids = AssetDatabase.FindAssets("t:ScriptableObject");
-            foreach (string guid in guids)
-            {
-                string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-                ScriptableObject asset = AssetDatabase.LoadAssetAtPath<ScriptableObject>(assetPath);
-
-                if (asset == null)
-                {
-                    continue;
-                }
-
-                Type assetType = asset.GetType();
-                if (ShouldInclude(asset, assetType))
-                {
-                    string fileName = Path.GetFileName(assetPath);
-                    string destPath = Path.Combine(s_resoucePath, fileName);
-                    AssetDatabase.CopyAsset(assetPath, destPath);
-
-                    copied++;
-                    result.AppendLine($"\t{assetPath}");
-                }
-            }
-
-            result.AppendLine($"\tCopied assets: {copied}");
-            Debug.Log(result.ToString());
-        }
-
-        void IPostprocessBuildWithReport.OnPostprocessBuild(BuildReport report)
-        {
-            if (Directory.Exists(s_resoucePath))
-            {
-                FileUtil.DeleteFileOrDirectory(s_resoucePath);
-                FileUtil.DeleteFileOrDirectory(s_resoucePath + ".meta");
-                AssetDatabase.Refresh();
-
-                DeleteEmptyParentFolders(s_resoucePath);
-            }
-        }
-
-        private static readonly Type s_genericBaseType = typeof(RegisterableObject<,,>);
-
-        private static bool ShouldInclude(object obj, Type type)
-        {
-            while (type != null && type != typeof(object))
-            {
-                if (type.IsGenericType && type.GetGenericTypeDefinition() == s_genericBaseType)
-                {
-                    PropertyInfo prop = type.GetProperty("includeInRegistry", BindingFlags.Public | BindingFlags.Instance);
-                    if (prop == null || !prop.CanRead || prop.PropertyType != typeof(bool))
-                    {
-                        return false;
-                    }
-
-                    return (bool)prop.GetValue(obj);
-                }
-
-                type = type.BaseType;
-            }
-            return false;
-        }
-
-        private static void DeleteEmptyParentFolders(string startFolder)
-        {
-            string current = Path.GetDirectoryName(startFolder);
-
-            while (!string.IsNullOrEmpty(current) && current.Replace('\\', '/').ToLower() != "assets")
-            {
-                if (Directory.Exists(current) && Directory.GetFileSystemEntries(current).Length == 0)
-                {
-                    FileUtil.DeleteFileOrDirectory(current);
-                    FileUtil.DeleteFileOrDirectory(current + ".meta");
-                }
-                else
-                {
-                    break;
-                }
-
-                current = Path.GetDirectoryName(current);
-            }
-
-            AssetDatabase.Refresh();
         }
     }
 

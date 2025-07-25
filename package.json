@@ -1,14 +1,14 @@
 {
-	"name": "com.zlitz.registries",
-	"displayName": "Zlitz's Registries",
+	"name": "com.zlitz.utilityso",
+	"displayName": "Zlitz's Utility Scriptable Objects",
 	"author": "ZlitzGames",
 	"version": "1.0.0",
 	"unity": "2022.3",
-	"description": "Registry pattern for managing scriptable objects.",
+	"description": "Useful scriptable objects.",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/zlitzdev/Registries.git"
+		"url": "git+https://github.com/zlitzdev/UtilitySO.git"
 	},
 	"keywords": [
 		"management"

@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
 
-namespace Zlitz.General.Registries
+namespace Zlitz.General.UtilitySO
 {
     [CustomPropertyDrawer(typeof(RegisterableObject<,,>.LazyReference))]
     internal sealed class LazyReferenceDrawer : PropertyDrawer
