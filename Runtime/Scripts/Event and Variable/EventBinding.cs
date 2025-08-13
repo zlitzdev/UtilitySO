@@ -34,7 +34,7 @@ namespace Zlitz.General.UtilitySO
             {
                 if (m_eventObject != null)
                 {
-                    m_eventObject.RemoveListerner(Callback);
+                    m_eventObject.RemoveListener(Callback);
                     m_eventObject = null;
                 }
             }

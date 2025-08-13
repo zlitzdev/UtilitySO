@@ -23,7 +23,7 @@ namespace Zlitz.General.UtilitySO
             OnListenerAdded(listener);
         }
 
-        public void RemoveListerner(Action<T> listener)
+        public void RemoveListener(Action<T> listener)
         {
             m_onInvoke -= listener;
         }
