@@ -95,6 +95,32 @@ namespace Zlitz.General.UtilitySO
         public virtual bool includeInRegistry => true;
 
         protected abstract TData CreateData();
+
+        public static bool operator ==(RegisterableObject<T, TId, TData> obj1, RegisterableObject<T, TId, TData> obj2)
+        {
+            ScriptableObject scriptable1 = obj1;
+            ScriptableObject scriptable2 = obj2;
+
+            if (scriptable1 == null || !obj1.includeInRegistry)
+            {
+                return scriptable2 == null || !obj2.includeInRegistry;
+            }
+
+            return scriptable2 == scriptable1;
+        }
+
+        public static bool operator !=(RegisterableObject<T, TId, TData> obj1, RegisterableObject<T, TId, TData> obj2)
+        {
+            ScriptableObject scriptable1 = obj1;
+            ScriptableObject scriptable2 = obj2;
+
+            if (scriptable1 == null || !obj1.includeInRegistry)
+            {
+                return scriptable2 != null && obj2.includeInRegistry;
+            }
+
+            return scriptable2 != scriptable1;
+        }
     }
 
     public abstract class RegisterableObject<T, TId> : RegisterableObject<T, TId, VoidData>
