@@ -81,6 +81,20 @@ namespace Zlitz.General.UtilitySO
             private T m_value;
 
             public T value => m_value == null ? (m_value = Get(m_id)) : m_value;
+
+            public override bool Equals(object obj)
+            {
+                if (obj is LazyReference other)
+                {
+                    return EqualityComparer<TId>.Default.Equals(m_id, other.m_id);
+                }
+                return false;
+            }
+
+            public override int GetHashCode()
+            {
+                return m_id.GetHashCode();
+            }
         }
 
         #endregion
@@ -95,6 +109,32 @@ namespace Zlitz.General.UtilitySO
         public virtual bool includeInRegistry => true;
 
         protected abstract TData CreateData();
+
+        public override bool Equals(object other)
+        {
+            if (other == null)
+            {
+                return !includeInRegistry;
+            }
+            if (other is RegisterableObject<T, TId, TData> registerable)
+            {
+                if (!includeInRegistry)
+                {
+                    return !registerable.includeInRegistry;
+                }
+                return registerable == this;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            if (!includeInRegistry)
+            {
+                return 0;
+            }
+            return m_id.GetHashCode();
+        }
 
         public static bool operator ==(RegisterableObject<T, TId, TData> obj1, RegisterableObject<T, TId, TData> obj2)
         {
