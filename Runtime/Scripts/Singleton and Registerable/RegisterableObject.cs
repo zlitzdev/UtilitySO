@@ -93,7 +93,7 @@ namespace Zlitz.General.UtilitySO
 
             public override int GetHashCode()
             {
-                return m_id.GetHashCode();
+                return m_id?.GetHashCode() ?? 0;
             }
         }
 
@@ -133,7 +133,7 @@ namespace Zlitz.General.UtilitySO
             {
                 return 0;
             }
-            return m_id.GetHashCode();
+            return m_id?.GetHashCode() ?? 0;
         }
 
         public static bool operator ==(RegisterableObject<T, TId, TData> obj1, RegisterableObject<T, TId, TData> obj2)
