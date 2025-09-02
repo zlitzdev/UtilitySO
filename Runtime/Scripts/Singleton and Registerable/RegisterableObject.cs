@@ -19,29 +19,32 @@ namespace Zlitz.General.UtilitySO
     {
         #region Registry
 
-        private static Dictionary<TId, KeyValuePair<T, TData>> s_entries;
+        private TData m_registryData;
+
+        private static Dictionary<TId, T> s_entries;
+
+        private void InitializeData()
+        {
+            m_registryData = includeInRegistry ? CreateData() : null;
+        }
 
         private static void Initialize()
         {
-            (s_entries ??= new Dictionary<TId, KeyValuePair<T, TData>>()).Clear();
+            (s_entries ??= new Dictionary<TId, T>()).Clear();
 
             T[] entries = RegistryImpl.GetEntries<T, TId, TData>();
             foreach (T entry in entries)
             {
-                TId id = entry.id;
-                KeyValuePair<T, TData> content = new KeyValuePair<T, TData>(entry, entry.CreateData());
-            
-                if (!s_entries.TryAdd(id, content))
+                entry.InitializeData();
+                if (!s_entries.TryAdd(entry.id, entry))
                 {
-                    Debug.LogWarning($"[{typeof(T).Name}] Duplicated ID detected: {id.ToString()}.");
+                    Debug.LogWarning($"[{typeof(T).Name}] Duplicated ID detected: {entry.id.ToString()}.");
                 }
             }
 
         }
 
-        public static IEnumerable<T> entries => s_entries.Values.Select(c => c.Key);
-
-        public static IEnumerable<KeyValuePair<T, TData>> entriesWithData => s_entries.Values;
+        public static IEnumerable<T> entries => s_entries.Values;
 
         public static T Get(TId id)
         {
@@ -52,10 +55,10 @@ namespace Zlitz.General.UtilitySO
         {
             data = default;
 
-            if (s_entries != null && id != null && s_entries.TryGetValue(id, out KeyValuePair<T, TData> content))
+            if (s_entries != null && id != null && s_entries.TryGetValue(id, out T entry))
             {
-                data = content.Value;
-                return content.Key;
+                data = entry == null ? default : entry.m_registryData;
+                return entry;
             }
 
             return null;
@@ -63,8 +66,9 @@ namespace Zlitz.General.UtilitySO
 
         public bool TryGetData(out TData data)
         {
-            if (Get(m_id, out data) == this)
+            if (this != null)
             {
+                data = m_registryData;
                 return true;
             }
 
